@@ -104,6 +104,10 @@ int main(int argc, char *argv[])
     QCommandLineOption allowOption(QStringList() << "a" << "allow", "allow connection from IP", "allow");
     parser.addOption(allowOption);
 
+    QCommandLineOption allowAllOption(QStringList() << "A" << "allow-all", "allow connections from all interfaces");
+    parser.addOption(allowAllOption);
+
+
     parser.process(app);
 
     bool smoothScaling = parser.isSet(smoothOption);
@@ -152,12 +156,18 @@ int main(int argc, char *argv[])
 
     }
 
+    bool allowAllConnections = parser.isSet(allowAllOption);
+
+
     if (!configureSignalHandlers()){
         LOG() << "failed to setup Unix Signal Handlers";
         return 1;
     }
 
-    ScreenToVnc screen2vnc(NULL, smoothScaling, scaleFactor, orientation, usec, buffers, processTimerInterval, doMouseHandler, doKeyboardHandler);
+    setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/run/user/100000/dbus/user_bus_socket", 0);
+
+    ScreenToVnc screen2vnc(NULL, smoothScaling, scaleFactor, usec, buffers, processTimerInterval, doMouseHandler, allowAllConnections);
+
     if(!screen2vnc.m_allFine){
         LOG() << "something failed to initialize!";
         return 1;

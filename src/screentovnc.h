@@ -94,6 +94,7 @@ static bool hasBntTouch;
 static float mtAbsCorrecturX;
 static float mtAbsCorrecturY;
 static int uinputKeyboardDeviceFD;
+static bool clientAllowAllConnections;
 
 enum displayState{
     displayOn,
@@ -104,7 +105,7 @@ class ScreenToVnc : public QObject
 {
     Q_OBJECT
 public:
-    explicit ScreenToVnc(QObject *parent = 0, bool smoothScaling = false, float scalingFactor = 1, Orientation orientation = Portrait, int usec = 5000, int buffers = 2, int processTimerInterval = 0, bool doMouseHandling = true, bool doKeyboardHandling = true);
+    explicit ScreenToVnc(QObject *parent = 0, bool smoothScaling = false, float scalingFactor = 1, Orientation orientation = Portrait, int usec = 5000, int buffers = 2, int processTimerInterval = 0, bool doMouseHandling = true, bool doKeyboardHandling = true, bool allowAllConnections = false);
     ~ScreenToVnc();
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
