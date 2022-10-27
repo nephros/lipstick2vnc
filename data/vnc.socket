@@ -3,4 +3,5 @@ Before=vnc.service
 
 [Socket]
 ListenStream=5900
+BindIPv6Only=both
 Accept=no
