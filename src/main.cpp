@@ -27,6 +27,7 @@
 
 #include <QGuiApplication>
 #include <QCommandLineParser>
+#include <QHostAddress>
 
 #include "screentovnc.h"
 #include "logging.h"
@@ -100,6 +101,9 @@ int main(int argc, char *argv[])
     QCommandLineOption keyboardOption(QStringList() << "k" << "keyboard-handler", "handle keyboard events from vnc clients");
     parser.addOption(keyboardOption);
 
+    QCommandLineOption allowOption(QStringList() << "a" << "allow", "allow connection from IP", "allow");
+    parser.addOption(allowOption);
+
     parser.process(app);
 
     bool smoothScaling = parser.isSet(smoothOption);
@@ -139,6 +143,13 @@ int main(int argc, char *argv[])
         orientation = PortraitInverted;
     } else if (parser.isSet(landscapeInvertedOption)){
         orientation = LandscapeInverted;
+    }
+
+    // default to localhost, so we can use ssh tunnels:
+    QHostAddress allowIp = QHostAddress(QHostAddress::LocalHost);
+    if (parser.isSet(allowOption)){
+        allowIp = QHostAddress.setAddress(parser.value(allowOption));
+
     }
 
     if (!configureSignalHandlers()){
