@@ -1199,8 +1199,9 @@ rfbNewClientAction ScreenToVnc::newclient(rfbClientPtr cl)
     }
 
     foreach (QNetworkAddressEntry entry, wifiIf.addressEntries()){
+        LOG() << "checking remote IP, allow: " << clientAllowAddress;
         if (remoteAddr.protocol() == entry.ip().protocol()
-            && remoteAddr.isInSubnet(entry.ip(), entry.prefixLength())
+            //&& remoteAddr.isInSubnet(entry.ip(), entry.prefixLength())
             //&& remoteAddr.isEqual(allowIp)){ // only in Qt 5.8
             && remoteAddr == clientAllowAddress){
             LOG() << "allowing wifi connection from: " << remoteAddr.toString();
