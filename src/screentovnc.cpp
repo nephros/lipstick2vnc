@@ -81,7 +81,7 @@
 Recorder *ScreenToVnc::m_recorder;
 Orientation ScreenToVnc::m_orientation;
 
-ScreenToVnc::ScreenToVnc(QObject *parent, bool smoothScaling, float scalingFactor, Orientation orientation, int usec, int buffers, int processTimerInterval, bool doMouseHandling, bool doKeyboardHandling, bool allowAllConnections) :
+ScreenToVnc::ScreenToVnc(QObject *parent, bool smoothScaling, float scalingFactor, Orientation orientation, int usec, int buffers, int processTimerInterval, bool doMouseHandling, bool doKeyboardHandling, bool allowAllConnections, QHostAddress allowIp) :
     QObject(parent)
 {
     IN;
@@ -93,6 +93,7 @@ ScreenToVnc::ScreenToVnc(QObject *parent, bool smoothScaling, float scalingFacto
     m_doMouseHandling = doMouseHandling;
     m_doKeyboardHandling = doKeyboardHandling;
     clientAllowAllConnections = allowAllConnections;
+    clientAllowAddress = allowIp;
 
     if (allowAllConnections)
         LOG() << "Allowing connections from all interfaces";
@@ -1197,11 +1198,15 @@ rfbNewClientAction ScreenToVnc::newclient(rfbClientPtr cl)
         }
     }
 
-
     foreach (QNetworkAddressEntry entry, wifiIf.addressEntries()){
         if (remoteAddr.protocol() == entry.ip().protocol()
-            && remoteAddr.isInSubnet(entry.ip(), entry.prefixLength())){
+            && remoteAddr.isInSubnet(entry.ip(), entry.prefixLength())
+            //&& remoteAddr.isEqual(allowIp)){ // only in Qt 5.8
+            && remoteAddr == clientAllowAddress){
+            LOG() << "allowing wifi connection from: " << remoteAddr.toString();
             allowConnection = true;
+        } else {
+            LOG() << "refusing wifi connection from: " << remoteAddr.toString();
         }
     }
 

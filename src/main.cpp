@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
     // default to localhost, so we can use ssh tunnels:
     QHostAddress allowIp = QHostAddress(QHostAddress::LocalHost);
     if (parser.isSet(allowOption)){
-        allowIp = QHostAddress.setAddress(parser.value(allowOption));
+        allowIp.setAddress(parser.value(allowOption));
 
     }
 
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
 
     setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/run/user/100000/dbus/user_bus_socket", 0);
 
-    ScreenToVnc screen2vnc(NULL, smoothScaling, scaleFactor, usec, buffers, processTimerInterval, doMouseHandler, allowAllConnections);
+    ScreenToVnc screen2vnc(NULL, smoothScaling, scaleFactor, orientation, usec, buffers, processTimerInterval, doMouseHandler, doKeyboardHandler, allowAllConnections, allowIp);
 
     if(!screen2vnc.m_allFine){
         LOG() << "something failed to initialize!";
