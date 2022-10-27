@@ -20,8 +20,8 @@ BuildRequires:  oneshot
 Requires:       oneshot
 Requires:       jolla-sessions-qt5 >= 1.2.7
 Requires(pre):  sailfish-setup
-%{_oneshot_requires_post}
-
+#%%%{_oneshot_requires_post}
+%{systemd_requires}
 
 %description
 %{summary}.
@@ -47,21 +47,16 @@ mkdir -p %{buildroot}%{_userunitdir}/sockets.target.wants/
 ln -s ../vnc.socket %{buildroot}%{_userunitdir}/sockets.target.wants/vnc.socket
 
 %post
-systemctl-user daemon-reload || :
-systemctl-user stop vnc.service || :
+%systemd_user_post stop vnc.service || :
+%systemd_user_post daemon-reload || :
 %{_bindir}/add-oneshot 20-lipstick2vnc-configurator || :
 
 %preun
-if [ "$1" == 0 ]
-then
-    systemctl-user stop vnc.service vnc.socket || :
-fi
+%systemd_user_preun vnc.service || :
+%systemd_user_preun vnc.socket || :
 
 %postun
-if [ "$1" == 0 ]
-then
-    systemctl-user daemon-reload || :
-fi
+%systemd_user_postun
 
 %files
 %defattr(-,root,root,-)
