@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     QCommandLineOption keyboardOption(QStringList() << "k" << "keyboard-handler", "handle keyboard events from vnc clients");
     parser.addOption(keyboardOption);
 
-    QCommandLineOption allowOption(QStringList() << "a" << "allow", "allow connection from IP", "allow");
+    QCommandLineOption allowOption(QStringList() << "a" << "allow", "allow connection from IP", "IP Address");
     parser.addOption(allowOption);
 
     QCommandLineOption allowAllOption(QStringList() << "A" << "allow-all", "allow connections from all interfaces");
