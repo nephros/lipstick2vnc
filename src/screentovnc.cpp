@@ -1166,6 +1166,7 @@ rfbNewClientAction ScreenToVnc::newclient(rfbClientPtr cl)
 
     // TODO: make that configurable, usb device interface is not always rndis0!
     QNetworkInterface usbIf = QNetworkInterface::interfaceFromName("rndis0");
+    QNetworkInterface wifiIf = QNetworkInterface::interfaceFromName("wlan0");
 
     QHostAddress remoteAddr = QHostAddress(QString::fromLatin1(cl->host));
 
@@ -1183,6 +1184,14 @@ rfbNewClientAction ScreenToVnc::newclient(rfbClientPtr cl)
     }
 
     foreach (QNetworkAddressEntry entry, usbIf.addressEntries()){
+        if (remoteAddr.protocol() == entry.ip().protocol()
+            && remoteAddr.isInSubnet(entry.ip(), entry.prefixLength())){
+            allowConnection = true;
+        }
+    }
+
+
+    foreach (QNetworkAddressEntry entry, wifiIf.addressEntries()){
         if (remoteAddr.protocol() == entry.ip().protocol()
             && remoteAddr.isInSubnet(entry.ip(), entry.prefixLength())){
             allowConnection = true;
